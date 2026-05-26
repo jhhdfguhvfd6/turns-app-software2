@@ -1,0 +1,114 @@
+version: '3.8'
+
+services:
+
+  # ─── Base de datos MongoDB ───────────────────────────────────────────────────
+  mongodb:
+    image: mongo:7
+    container_name: turnos_mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - turnos_network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ─── Aplicación principal Laravel ────────────────────────────────────────────
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: turnos_app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_URL: http://localhost:8000
+      DB_CONNECTION: mongodb
+      DB_URI: mongodb://mongodb:27017/banco_bogota_turnos
+      DB_DATABASE: banco_bogota_turnos
+      NOTIFICATION_SERVICE_URL: http://notification-service:3001
+      AUDIT_SERVICE_URL: http://audit-service:3002
+      SERVICE_SECRET: ${SERVICE_SECRET:-mi_clave_secreta_microservicios}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - turnos_network
+
+  # ─── Microservicio de Notificaciones ─────────────────────────────────────────
+  notification-service:
+    build:
+      context: ./microservices/notification-service
+      dockerfile: Dockerfile
+    container_name: turnos_notification
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      PORT: 3001
+      MAIL_HOST: ${MAIL_HOST:-smtp-relay.brevo.com}
+      MAIL_PORT: ${MAIL_PORT:-587}
+      MAIL_USER: ${MAIL_USER}
+      MAIL_PASS: ${MAIL_PASS}
+      MAIL_FROM_NAME: Banco de Bogotá
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS:-no-reply@bancodebogota.com}
+      SERVICE_SECRET: ${SERVICE_SECRET:-mi_clave_secreta_microservicios}
+    networks:
+      - turnos_network
+
+  # ─── Microservicio de Auditoría ───────────────────────────────────────────────
+  audit-service:
+    build:
+      context: ./microservices/audit-service
+      dockerfile: Dockerfile
+    container_name: turnos_audit
+    restart: unless-stopped
+    ports:
+      - "3002:3002"
+    environment:
+      PORT: 3002
+      MONGO_URI: mongodb://mongodb:27017/banco_bogota_turnos
+      SERVICE_SECRET: ${SERVICE_SECRET:-mi_clave_secreta_microservicios}
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - turnos_network
+
+  # ─── API Gateway ──────────────────────────────────────────────────────────────
+  api-gateway:
+    build:
+      context: ./microservices/api-gateway
+      dockerfile: Dockerfile
+    container_name: turnos_gateway
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      NOTIFICATION_SERVICE_URL: http://notification-service:3001
+      AUDIT_SERVICE_URL: http://audit-service:3002
+      MAIN_APP_URL: http://app:8000
+      SERVICE_SECRET: ${SERVICE_SECRET:-mi_clave_secreta_microservicios}
+    depends_on:
+      - app
+      - notification-service
+      - audit-service
+    networks:
+      - turnos_network
+
+networks:
+  turnos_network:
+    driver: bridge
+
+volumes:
+  mongodb_data:

@@ -16,8 +16,8 @@ return new class extends Migration
             $table->string('password')->nullable()->change();
 
             // Añadimos las columnas para el PIN
-            $table->string('pin', 4)->nullable()->after('password');
-            $table->timestamp('pin_expires_at')->nullable()->after('pin');
+            $table->string('pin', 4)->nullable();
+            $table->timestamp('pin_expires_at')->nullable();
         });
     }
 

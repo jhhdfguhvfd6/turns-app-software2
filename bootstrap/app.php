@@ -12,8 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'role'     => \App\Http\Middleware\RoleMiddleware::class,
+            'no-cache' => \App\Http\Middleware\NoCacheMiddleware::class,
         ]);
+
+        $middleware->appendToGroup('auth', \App\Http\Middleware\NoCacheMiddleware::class);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'microservices' => [
+        'notification_url' => env('NOTIFICATION_SERVICE_URL', 'http://localhost:3001'),
+        'audit_url'        => env('AUDIT_SERVICE_URL',        'http://localhost:3002'),
+        'secret'           => env('SERVICE_SECRET',           'mi_clave_secreta_microservicios'),
+    ],
+
 ];
