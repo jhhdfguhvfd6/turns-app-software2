@@ -35,6 +35,8 @@ RUN npm run build \
     && php artisan view:cache \
     && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
+RUN mkdir -p /var/log/supervisor /var/run
+
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
