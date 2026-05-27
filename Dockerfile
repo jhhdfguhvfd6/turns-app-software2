@@ -30,16 +30,15 @@ RUN npm install
 COPY . .
 
 RUN npm run build \
-    && php artisan config:cache \
-    && php artisan route:cache \
-    && php artisan view:cache \
     && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 RUN mkdir -p /var/log/supervisor /var/run
 
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/start.sh /start.sh
+RUN chmod +x /start.sh
 
 EXPOSE 8000
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/start.sh"]
