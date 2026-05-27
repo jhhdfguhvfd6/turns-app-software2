@@ -33,7 +33,9 @@ RUN composer dump-autoload --optimize \
     && npm run build \
     && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-RUN mkdir -p /var/log/supervisor /var/run /var/lib/nginx/tmp/fastcgi /var/lib/nginx/tmp/client_body \
+RUN mkdir -p /var/log/supervisor /var/run \
+    /tmp/nginx_client /tmp/nginx_fastcgi /tmp/nginx_proxy /tmp/nginx_uwsgi /tmp/nginx_scgi \
+    && chmod -R 777 /tmp/nginx_client /tmp/nginx_fastcgi /tmp/nginx_proxy /tmp/nginx_uwsgi /tmp/nginx_scgi /var/lib/nginx/tmp/fastcgi /var/lib/nginx/tmp/client_body \
     && chmod -R 777 /var/lib/nginx/tmp
 
 COPY docker/nginx.conf /etc/nginx/nginx.conf
