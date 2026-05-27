@@ -29,7 +29,8 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build \
+RUN composer dump-autoload --optimize \
+    && npm run build \
     && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 RUN mkdir -p /var/log/supervisor /var/run /var/lib/nginx/tmp/fastcgi /var/lib/nginx/tmp/client_body \
