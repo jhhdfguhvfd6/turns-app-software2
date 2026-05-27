@@ -32,7 +32,8 @@ COPY . .
 RUN npm run build \
     && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-RUN mkdir -p /var/log/supervisor /var/run
+RUN mkdir -p /var/log/supervisor /var/run /var/lib/nginx/tmp/fastcgi /var/lib/nginx/tmp/client_body \
+    && chmod -R 777 /var/lib/nginx/tmp
 
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
