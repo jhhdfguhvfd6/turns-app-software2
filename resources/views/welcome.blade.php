@@ -12,7 +12,7 @@
         <header class="bg-banco-blue shadow-lg rounded-2xl">
         <nav class="px-6 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <img src="{{ asset('img/logo_banco_bogota.png') }}" alt="Logo Banco de Bogotá" class="h-8 brightness-0 invert">
+                <img src="{{ asset('img/logo_banco_bogota.png') }}" alt="Logo Banco de Bogotá" class="h-8">
                 <span class="text-xl font-bold text-white">Banco de Bogotá</span>
             </div>
             <div class="flex items-center space-x-3">
