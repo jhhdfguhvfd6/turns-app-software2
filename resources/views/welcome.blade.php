@@ -14,7 +14,10 @@
                 <img src="{{ asset('img/logo_banco_bogota.png') }}" alt="Logo Banco de Bogotá" class="h-8">
                 <span class="text-xl font-bold text-banco-blue">Banco de Bogotá</span>
             </div>
-            <div>
+            <div class="flex items-center space-x-3">
+                <a href="{{ route('register') }}" class="border-2 border-banco-blue text-banco-blue font-bold py-2 px-5 rounded-full hover:bg-banco-blue hover:text-white transition">
+                    Registrarse
+                </a>
                 <a href="{{ route('login') }}" class="bg-banco-yellow text-banco-blue font-bold py-2 px-5 rounded-full hover:bg-yellow-400 transition">
                     Iniciar Sesión
                 </a>
