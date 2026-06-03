@@ -8,14 +8,15 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="antialiased bg-light-gray">
-    <header class="bg-white shadow-sm sticky top-0 z-50">
-        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+    <div class="sticky top-4 z-50 px-6">
+        <header class="bg-banco-blue shadow-lg rounded-2xl">
+        <nav class="px-6 py-4 flex justify-between items-center">
             <div class="flex items-center space-x-2">
-                <img src="{{ asset('img/logo_banco_bogota.png') }}" alt="Logo Banco de Bogotá" class="h-8">
-                <span class="text-xl font-bold text-banco-blue">Banco de Bogotá</span>
+                <img src="{{ asset('img/logo_banco_bogota.png') }}" alt="Logo Banco de Bogotá" class="h-8 brightness-0 invert">
+                <span class="text-xl font-bold text-white">Banco de Bogotá</span>
             </div>
             <div class="flex items-center space-x-3">
-                <a href="{{ route('register') }}" class="border-2 border-banco-blue text-banco-blue font-bold py-2 px-5 rounded-full hover:bg-banco-blue hover:text-white transition">
+                <a href="{{ route('register') }}" class="border-2 border-white text-white font-bold py-2 px-5 rounded-full hover:bg-white hover:text-banco-blue transition">
                     Registrarse
                 </a>
                 <a href="{{ route('login') }}" class="bg-banco-yellow text-banco-blue font-bold py-2 px-5 rounded-full hover:bg-yellow-400 transition">
@@ -23,6 +24,8 @@
                 </a>
             </div>
         </nav>
+        </header>
+    </div>
     </header>
 
     <main class="container mx-auto px-6 py-16 text-center">
