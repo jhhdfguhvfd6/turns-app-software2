@@ -13,10 +13,11 @@ function authMiddleware(req, res, next) {
 }
 
 function createTransporter() {
+    const port = parseInt(process.env.MAIL_PORT) || 465;
     return nodemailer.createTransport({
         host: process.env.MAIL_HOST,
-        port: parseInt(process.env.MAIL_PORT),
-        secure: false,
+        port: port,
+        secure: port === 465,
         auth: {
             user: process.env.MAIL_USER,
             pass: process.env.MAIL_PASS,
