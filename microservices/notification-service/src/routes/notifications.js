@@ -12,14 +12,16 @@ function authMiddleware(req, res, next) {
     next();
 }
 
-async function sendBrevoEmail(to, subject, htmlContent) {
-    await axios.post('https://api.brevo.com/v3/smtp/email', {
-        sender: { name: 'Banco de Bogotá', email: process.env.MAIL_FROM_ADDRESS },
-        to: [{ email: to }],
-        subject,
-        htmlContent,
+async function sendEmail(to, subject, htmlContent) {
+    await axios.post('https://api.mailjet.com/v3.1/send', {
+        Messages: [{
+            From: { Email: process.env.MAIL_FROM_ADDRESS, Name: 'Banco de Bogotá' },
+            To: [{ Email: to }],
+            Subject: subject,
+            HTMLPart: htmlContent,
+        }],
     }, {
-        headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' },
+        auth: { username: process.env.MAILJET_API_KEY, password: process.env.MAILJET_SECRET_KEY },
     });
 }
 
@@ -79,7 +81,7 @@ router.post('/send-pin',
         </html>`;
 
         try {
-            await sendBrevoEmail(email, 'Tu Código de Acceso - Banco de Bogotá', htmlContent);
+            await sendEmail(email, 'Tu Código de Acceso - Banco de Bogotá', htmlContent);
 
             console.log(`[notification-service] PIN enviado a ${email}`);
             res.json({ success: true, message: `PIN enviado a ${email}` });
@@ -147,7 +149,7 @@ router.post('/send-turn-confirmation',
         </html>`;
 
         try {
-            await sendBrevoEmail(email, `Turno ${turn_code} registrado - Banco de Bogotá`, htmlContent);
+            await sendEmail(email, `Turno ${turn_code} registrado - Banco de Bogotá`, htmlContent);
 
             console.log(`[notification-service] Confirmación de turno ${turn_code} enviada a ${email}`);
             res.json({ success: true, message: `Confirmación enviada a ${email}` });
