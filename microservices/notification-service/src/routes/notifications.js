@@ -1,5 +1,5 @@
 const express = require('express');
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const { body, validationResult } = require('express-validator');
 
 const router = express.Router();
@@ -12,17 +12,8 @@ function authMiddleware(req, res, next) {
     next();
 }
 
-function createTransporter() {
-    const port = parseInt(process.env.MAIL_PORT) || 465;
-    return nodemailer.createTransport({
-        host: process.env.MAIL_HOST,
-        port: port,
-        secure: port === 465,
-        auth: {
-            user: process.env.MAIL_USER,
-            pass: process.env.MAIL_PASS,
-        },
-    });
+function getResend() {
+    return new Resend(process.env.RESEND_API_KEY);
 }
 
 // POST /api/notifications/send-pin
@@ -81,9 +72,9 @@ router.post('/send-pin',
         </html>`;
 
         try {
-            const transporter = createTransporter();
-            await transporter.sendMail({
-                from: `"${process.env.MAIL_FROM_NAME}" <${process.env.MAIL_FROM_ADDRESS}>`,
+            const resend = getResend();
+            await resend.emails.send({
+                from: 'Banco de Bogotá <onboarding@resend.dev>',
                 to: email,
                 subject: 'Tu Código de Acceso - Banco de Bogotá',
                 html: htmlContent,
@@ -155,9 +146,9 @@ router.post('/send-turn-confirmation',
         </html>`;
 
         try {
-            const transporter = createTransporter();
-            await transporter.sendMail({
-                from: `"${process.env.MAIL_FROM_NAME}" <${process.env.MAIL_FROM_ADDRESS}>`,
+            const resend = getResend();
+            await resend.emails.send({
+                from: 'Banco de Bogotá <onboarding@resend.dev>',
                 to: email,
                 subject: `Turno ${turn_code} registrado - Banco de Bogotá`,
                 html: htmlContent,
