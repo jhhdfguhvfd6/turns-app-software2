@@ -1,5 +1,17 @@
 import './bootstrap';
 
+// Animación de salida al navegar
+document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href]');
+    if (!link) return;
+    const href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('mailto') || link.target === '_blank') return;
+    if (link.closest('form')) return;
+    e.preventDefault();
+    document.body.classList.add('page-exit');
+    setTimeout(() => { window.location.href = href; }, 200);
+});
+
 /**
  * Función para renderizar la tabla de turnos.
  * Recibe la lista de turnos y el cuerpo de la tabla donde se dibujarán.

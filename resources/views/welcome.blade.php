@@ -92,5 +92,35 @@
             </div>
         </aside>
     </div>
+
+    <footer class="bg-banco-blue text-white mt-16">
+        <div class="container mx-auto px-6 py-10 grid md:grid-cols-3 gap-8">
+            <div>
+                <div class="flex items-center space-x-2 mb-3">
+                    <img src="{{ asset('img/logo_banco_bogota.png') }}" alt="Logo" class="h-8 brightness-0 invert">
+                    <span class="text-lg font-bold">Banco de Bogotá</span>
+                </div>
+                <p class="text-sm text-blue-200">Sistema inteligente de gestión de turnos. Optimiza tu tiempo y evita filas.</p>
+            </div>
+            <div>
+                <h4 class="font-bold text-banco-yellow mb-3">Acceso rápido</h4>
+                <ul class="space-y-2 text-sm text-blue-200">
+                    <li><a href="{{ route('login') }}" class="hover:text-white transition">Iniciar Sesión</a></li>
+                    <li><a href="{{ route('register') }}" class="hover:text-white transition">Registrarse</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-bold text-banco-yellow mb-3">Información</h4>
+                <ul class="space-y-2 text-sm text-blue-200">
+                    <li>Lunes a Viernes: 8:00 AM – 4:00 PM</li>
+                    <li>Sábados: 9:00 AM – 12:00 PM</li>
+                    <li>Atención al cliente: 01 8000 912 345</li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-white/20 text-center py-4 text-xs text-blue-300">
+            © {{ date('Y') }} Banco de Bogotá. Todos los derechos reservados.
+        </div>
+    </footer>
 </body>
 </html>
