@@ -1,5 +1,5 @@
 const express = require('express');
-const { Resend } = require('resend');
+const axios = require('axios');
 const { body, validationResult } = require('express-validator');
 
 const router = express.Router();
@@ -12,8 +12,15 @@ function authMiddleware(req, res, next) {
     next();
 }
 
-function getResend() {
-    return new Resend(process.env.RESEND_API_KEY);
+async function sendBrevoEmail(to, subject, htmlContent) {
+    await axios.post('https://api.brevo.com/v3/smtp/email', {
+        sender: { name: 'Banco de Bogotá', email: process.env.MAIL_FROM_ADDRESS },
+        to: [{ email: to }],
+        subject,
+        htmlContent,
+    }, {
+        headers: { 'api-key': process.env.BREVO_API_KEY, 'Content-Type': 'application/json' },
+    });
 }
 
 // POST /api/notifications/send-pin
@@ -72,13 +79,7 @@ router.post('/send-pin',
         </html>`;
 
         try {
-            const resend = getResend();
-            await resend.emails.send({
-                from: 'Banco de Bogotá <onboarding@resend.dev>',
-                to: email,
-                subject: 'Tu Código de Acceso - Banco de Bogotá',
-                html: htmlContent,
-            });
+            await sendBrevoEmail(email, 'Tu Código de Acceso - Banco de Bogotá', htmlContent);
 
             console.log(`[notification-service] PIN enviado a ${email}`);
             res.json({ success: true, message: `PIN enviado a ${email}` });
@@ -146,13 +147,7 @@ router.post('/send-turn-confirmation',
         </html>`;
 
         try {
-            const resend = getResend();
-            await resend.emails.send({
-                from: 'Banco de Bogotá <onboarding@resend.dev>',
-                to: email,
-                subject: `Turno ${turn_code} registrado - Banco de Bogotá`,
-                html: htmlContent,
-            });
+            await sendBrevoEmail(email, `Turno ${turn_code} registrado - Banco de Bogotá`, htmlContent);
 
             console.log(`[notification-service] Confirmación de turno ${turn_code} enviada a ${email}`);
             res.json({ success: true, message: `Confirmación enviada a ${email}` });
